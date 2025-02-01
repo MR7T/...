@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saihnaad</title>
+    <title>Валентин болох уу?</title>
     <style>
         body { 
             text-align: center; 
@@ -30,21 +30,50 @@
             color: black;
             position: absolute;
         }
+        .hidden {
+            display: none;
+        }
+        #activity-input {
+            padding: 10px;
+            font-size: 18px;
+            width: 80%;
+            max-width: 300px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #000;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Чи миний Valentine болох уу? ❤️</h1>
-        <button class="btn yes-btn" onclick="alert('Баярлалаа! ❤️')">Тийм</button>
+    <div id="question-container" class="container">
+        <h1>Чи миний Валентин болох уу? ❤️</h1>
+        <button class="btn yes-btn" onclick="showNextStep()">Тийм</button>
         <button class="btn no-btn" id="no-btn" onmouseover="moveButton()">Үгүй</button>
     </div>
 
+    <div id="activity-container" class="container hidden">
+        <h1>Хамт юу хийх вэ?</h1>
+        <input type="text" id="activity-input" placeholder="Энд бичнэ үү...">
+        <button class="btn yes-btn" onclick="showActivity()">Болсон</button>
+        <p id="result" style="font-size: 18px; font-weight: bold;"></p>
+    </div>
+
     <script>
+        function showNextStep() {
+            document.getElementById('question-container').classList.add('hidden');
+            document.getElementById('activity-container').classList.remove('hidden');
+        }
+
         function moveButton() {
             let x = Math.random() * window.innerWidth - 100;
             let y = Math.random() * window.innerHeight - 50;
             document.getElementById('no-btn').style.left = x + "px";
             document.getElementById('no-btn').style.top = y + "px";
+        }
+
+        function showActivity() {
+            let activity = document.getElementById('activity-input').value;
+            document.getElementById('result').innerText = "Тэгвэл хамт " + activity + " хийе! ❤️";
         }
     </script>
 </body>
