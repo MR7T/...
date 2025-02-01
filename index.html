@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Валентин болох уу?</title>
+    <style>
+        body { 
+            text-align: center; 
+            font-family: Arial, sans-serif; 
+            background-color: pink;
+        }
+        .container { 
+            margin-top: 100px; 
+        }
+        .btn { 
+            padding: 15px 30px; 
+            font-size: 20px; 
+            margin: 10px; 
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+        }
+        .yes-btn {
+            background-color: red;
+            color: white;
+        }
+        .no-btn {
+            background-color: white;
+            color: black;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Чи миний Valentine болох уу? ❤️</h1>
+        <button class="btn yes-btn" onclick="alert('Баярлалаа! ❤️')">Тийм</button>
+        <button class="btn no-btn" id="no-btn" onmouseover="moveButton()">Үгүй</button>
+    </div>
+
+    <script>
+        function moveButton() {
+            let x = Math.random() * window.innerWidth - 100;
+            let y = Math.random() * window.innerHeight - 50;
+            document.getElementById('no-btn').style.left = x + "px";
+            document.getElementById('no-btn').style.top = y + "px";
+        }
+    </script>
+</body>
+</html>
