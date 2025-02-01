@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Хариултууд</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; background-color: #f8e8e8; }
+        h1 { color: red; }
+        #responses { margin-top: 20px; padding: 20px; background: white; border-radius: 10px; display: inline-block; text-align: left; }
+    </style>
+</head>
+<body>
+    <h1>💖 Валентин хариултууд 💖</h1>
+    <div id="responses">Loading...</div>
+
+    <script>
+        const GITHUB_USERNAME = "mr7t"; // Your GitHub username
+        const REPO_NAME = "Saihnaad";   // Your repository name
+        const FILE_PATH = "responses.json";  // Path to the responses file in your repo
+        const GITHUB_TOKEN = "your-personal-access-token";  // Replace with your GitHub token
+
+        async function fetchResponses() {
+            let apiUrl = `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${FILE_PATH}`;
+            let response = await fetch(apiUrl, { headers: { "Authorization": `token ${GITHUB_TOKEN}` } });
+            let data = await response.json();
+            let content = JSON.parse(atob(data.content)); // Decode base64 content
+
+            let responseDiv = document.getElementById("responses");
+            if (content.length > 0) {
+                responseDiv.innerHTML = "<ul>" + content.map(r => {
+                    return `<li><b>${r.activity}</b> - ${r.timestamp}</li>`;
+                }).join("") + "</ul>";
+            } else {
+                responseDiv.innerHTML = "No responses yet.";
+            }
+        }
+
+        fetchResponses();
+    </script>
+</body>
+</html>
