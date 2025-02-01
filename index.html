@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saihnaad</title>
+    <title>Saihnaad?</title>
     <style>
         body { 
             text-align: center; 
@@ -54,11 +54,16 @@
     <div id="activity-container" class="container hidden">
         <h1>Хамт юу хийх вэ?</h1>
         <input type="text" id="activity-input" placeholder="Энд бичнэ үү...">
-        <button class="btn yes-btn" onclick="showActivity()">Болсон</button>
+        <button class="btn yes-btn" onclick="saveActivity()">Болсон</button>
         <p id="result" style="font-size: 18px; font-weight: bold;"></p>
     </div>
 
     <script>
+        const GITHUB_USERNAME = "your-username";  // Replace with your GitHub username
+        const REPO_NAME = "valentine-website";  // Replace with your repo name
+        const FILE_PATH = "responses.json";
+        const GITHUB_TOKEN = "your-personal-access-token";  // Replace with your GitHub token
+
         function showNextStep() {
             document.getElementById('question-container').classList.add('hidden');
             document.getElementById('activity-container').classList.remove('hidden');
@@ -71,8 +76,37 @@
             document.getElementById('no-btn').style.top = y + "px";
         }
 
-        function showActivity() {
+        async function saveActivity() {
             let activity = document.getElementById('activity-input').value;
+            if (!activity.trim()) return;
+
+            let apiUrl = `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${FILE_PATH}`;
+
+            // Get current content of responses.json
+            let response = await fetch(apiUrl, { headers: { "Authorization": `token ${GITHUB_TOKEN}` } });
+            let data = await response.json();
+            let content = JSON.parse(atob(data.content)); // Decode base64 content
+
+            // Add new response
+            content.push({ activity, timestamp: new Date().toISOString() });
+
+            // Encode updated JSON
+            let updatedContent = btoa(JSON.stringify(content, null, 2));
+
+            // Send update to GitHub
+            await fetch(apiUrl, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `token ${GITHUB_TOKEN}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: "Updated responses.json",
+                    content: updatedContent,
+                    sha: data.sha  // Required for updating files on GitHub
+                })
+            });
+
             document.getElementById('result').innerText = "Тэгвэл хамт " + activity + " хийе! ❤️";
         }
     </script>
