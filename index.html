@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saihnaad</title>
+    <title>Saihnaadd</title>
     <style>
         body { 
             text-align: center; 
@@ -54,11 +54,16 @@
     <div id="activity-container" class="container hidden">
         <h1>Хамт юу хийх вэ?</h1>
         <input type="text" id="activity-input" placeholder="Энд бичнэ үү...">
-        <button class="btn yes-btn" onclick="showActivity()">Болсон</button>
+        <button class="btn yes-btn" onclick="saveResponse()">Болсон</button>
         <p id="result" style="font-size: 18px; font-weight: bold;"></p>
     </div>
 
     <script>
+        const GITHUB_USERNAME = "mr7t";  
+        const REPO_NAME = "Saihnaad";    
+        const FILE_PATH = "responses.json"; 
+        const GITHUB_TOKEN = "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";  // Replace with your actual token
+
         function showNextStep() {
             document.getElementById('question-container').classList.add('hidden');
             document.getElementById('activity-container').classList.remove('hidden');
@@ -71,26 +76,13 @@
             document.getElementById('no-btn').style.top = y + "px";
         }
 
-        function showActivity() {
+        function saveResponse() {
             let activity = document.getElementById('activity-input').value;
-            document.getElementById('result').innerText = "Тэгвэл хамт " + activity + " хийе! ❤️";
+            if (!activity.trim()) {
+                alert("Хамт юу хийхүү!");
+                return;
+            }
 
-            // Save the response (manually add this to responses.json on GitHub)
-            saveResponse(activity);
-        }
-
-        function saveResponse(activity) {
-            const response = {
-                activity: activity,
-                timestamp: new Date().toISOString() // Current timestamp in ISO format
-            };
-
-            const GITHUB_USERNAME = "mr7t"; // Your GitHub username
-            const REPO_NAME = "Saihnaad";   // Your repository name
-            const FILE_PATH = "responses.json";  // Path to the responses file in your repo
-            const GITHUB_TOKEN = "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";  // Replace with your GitHub token
-
-            // Fetch current file content from GitHub
             fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${FILE_PATH}`, {
                 headers: {
                     "Authorization": `token ${GITHUB_TOKEN}`
@@ -98,35 +90,33 @@
             })
             .then(response => response.json())
             .then(data => {
-                const content = JSON.parse(atob(data.content)); // Decode base64 content
-                content.push(response); // Add the new response to the array
+                let content = [];
+                if (data.content) {
+                    content = JSON.parse(atob(data.content));  // Decode Base64 content
+                }
 
-                // Save the updated content back to GitHub
-                const updatedContent = btoa(JSON.stringify(content)); // Encode back to base64
+                content.push({ activity: activity, timestamp: new Date().toISOString() });
+
+                const updatedContent = btoa(JSON.stringify(content, null, 2)); // Encode Base64
 
                 fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${FILE_PATH}`, {
-                    method: 'PUT',
+                    method: "PUT",
                     headers: {
                         "Authorization": `token ${GITHUB_TOKEN}`,
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        message: "Add new response",
+                        message: "New response added",
                         content: updatedContent,
-                        sha: data.sha // Include the file's SHA to update the file
+                        sha: data.sha  // Required to update file
                     })
                 })
-                .then(response => response.json())
-                .then(updatedData => {
-                    console.log("Response saved successfully!", YES);
+                .then(() => {
+                    document.getElementById('result').innerText = "Тэгвэл хамт " + activity + " ! ❤️";
                 })
-                .catch(error => {
-                    console.error("Error saving response:", error);
-                });
+                .catch(error => console.error("Error updating JSON:", error));
             })
-            .catch(error => {
-                console.error("Error fetching content:", error);
-            });
+            .catch(error => console.error("Error fetching JSON:", error));
         }
     </script>
 </body>
