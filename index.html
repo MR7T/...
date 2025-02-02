@@ -3,15 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saihnaadd</title>
+    <title>💖 Saihnaad 💖</title>
     <style>
         body { 
             text-align: center; 
             font-family: Arial, sans-serif; 
-            background-color: pink;
+            background-color: #fff0f5;
         }
         .container { 
-            margin-top: 100px; 
+            margin-top: 50px; 
+        }
+        img {
+            width: 200px; 
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 28px;
+            color: #333;
         }
         .btn { 
             padding: 15px 30px; 
@@ -22,51 +30,27 @@
             border-radius: 10px;
         }
         .yes-btn {
-            background-color: red;
+            background-color: #4CAF50;
             color: white;
         }
         .no-btn {
-            background-color: white;
-            color: black;
+            background-color: #f44336;
+            color: white;
             position: absolute;
-        }
-        .hidden {
-            display: none;
-        }
-        #activity-input {
-            padding: 10px;
-            font-size: 18px;
-            width: 80%;
-            max-width: 300px;
-            margin-top: 10px;
-            border-radius: 5px;
-            border: 1px solid #000;
         }
     </style>
 </head>
 <body>
-    <div id="question-container" class="container">
-        <h1>Чи миний Valentine болох уу? ❤️</h1>
-        <button class="btn yes-btn" onclick="showNextStep()">Тийм</button>
-        <button class="btn no-btn" id="no-btn" onmouseover="moveButton()">Үгүй</button>
-    </div>
-
-    <div id="activity-container" class="container hidden">
-        <h1>Хамт юу хийх вэ?</h1>
-        <input type="text" id="activity-input" placeholder="Энд бичнэ үү...">
-        <button class="btn yes-btn" onclick="saveResponse()">Болсон</button>
-        <p id="result" style="font-size: 18px; font-weight: bold;"></p>
+    <div class="container">
+        <img src="https://i.imgur.com/J2jF6XT.png" alt="Cute Bear">
+        <h1>💌 Чи миний Valentine Болох уу??💘</h1>
+        <button class="btn yes-btn" onclick="goToNewPage()">Yes 💖</button>
+        <button class="btn no-btn" id="no-btn" onmouseover="moveButton()">No 😢</button>
     </div>
 
     <script>
-        const GITHUB_USERNAME = "mr7t";  
-        const REPO_NAME = "Saihnaad";    
-        const FILE_PATH = "responses.json"; 
-        const GITHUB_TOKEN = "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";  // Replace with your actual token
-
-        function showNextStep() {
-            document.getElementById('question-container').classList.add('hidden');
-            document.getElementById('activity-container').classList.remove('hidden');
+        function goToNewPage() {
+            window.location.href = "yes.html";
         }
 
         function moveButton() {
@@ -74,49 +58,6 @@
             let y = Math.random() * window.innerHeight - 50;
             document.getElementById('no-btn').style.left = x + "px";
             document.getElementById('no-btn').style.top = y + "px";
-        }
-
-        function saveResponse() {
-            let activity = document.getElementById('activity-input').value;
-            if (!activity.trim()) {
-                alert("Хамт юу хийхүү!");
-                return;
-            }
-
-            fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${FILE_PATH}`, {
-                headers: {
-                    "Authorization": `token ${GITHUB_TOKEN}`
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                let content = [];
-                if (data.content) {
-                    content = JSON.parse(atob(data.content));  // Decode Base64 content
-                }
-
-                content.push({ activity: activity, timestamp: new Date().toISOString() });
-
-                const updatedContent = btoa(JSON.stringify(content, null, 2)); // Encode Base64
-
-                fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${FILE_PATH}`, {
-                    method: "PUT",
-                    headers: {
-                        "Authorization": `token ${GITHUB_TOKEN}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        message: "New response added",
-                        content: updatedContent,
-                        sha: data.sha  // Required to update file
-                    })
-                })
-                .then(() => {
-                    document.getElementById('result').innerText = "Тэгвэл хамт " + activity + " ! ❤️";
-                })
-                .catch(error => console.error("Error updating JSON:", error));
-            })
-            .catch(error => console.error("Error fetching JSON:", error));
         }
     </script>
 </body>
