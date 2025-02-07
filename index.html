@@ -12,7 +12,6 @@
         }
         .container { 
             margin-top: 50px;
-            position: relative;
         }
         img {
             width: 200px; 
@@ -37,9 +36,6 @@
         .no-btn {
             background-color: #f44336;
             color: white;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
         }
     </style>
 </head>
@@ -48,4 +44,17 @@
         <img src="https://i.imgur.com/pnyV7V6.png" alt="Cute Image">
         <h1>💌 Чи миний Valentine Болох уу?? medj bgalda hariultig...</h1>
         <button class="btn yes-btn" onclick="goToYesPage()">Yes 💖</button>
-        <button class="btn no
+        <button class="btn no-btn" onclick="goToNoPage()">No 😢</button>
+    </div>
+
+    <script>
+        function goToYesPage() {
+            window.location.href = "yes.html";
+        }
+
+        function goToNoPage() {
+            window.location.href = "no.html";
+        }
+    </script>
+</body>
+</html>
